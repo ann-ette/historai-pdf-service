@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HistorAI Conversation Summary – {{characterName}}</title>
+  <style>
+    /* ─── Reset & Base ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent:      #2C5F8A;
+      --accent-light:#E8F1F8;
+      --gold:        #C9A84C;
+      --text:        #1A1A2E;
+      --muted:       #5A6072;
+      --rule:        #D0D6E0;
+      --page-w:      750px;
+      --serif:       Georgia, 'Times New Roman', serif;
+      --sans:        'Helvetica Neue', Arial, sans-serif;
+    }
+
+    html, body {
+      font-family: var(--serif);
+      font-size: 11pt;
+      color: var(--text);
+      background: #fff;
+      line-height: 1.6;
+    }
+
+    /* ─── Page shell ────────────────────────────────────────────── */
+    .page {
+      width: var(--page-w);
+      margin: 0 auto;
+      padding: 48px 52px;
+    }
+
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+    }
+
+    /* ─── Header brand bar ──────────────────────────────────────── */
+    .brand-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 10px;
+      margin-bottom: 28px;
+    }
+    .brand-bar .logo-text {
+      font-family: var(--sans);
+      font-size: 13pt;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .brand-bar .doc-label {
+      font-family: var(--sans);
+      font-size: 8pt;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ─── Character hero ────────────────────────────────────────── */
+    .hero {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .hero-image-wrap {
+      flex-shrink: 0;
+    }
+    .hero-image {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent);
+      background: var(--accent-light);
+    }
+    .hero-info {
+      flex: 1;
+    }
+    .hero-name {
+      font-family: var(--sans);
+      font-size: 22pt;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.15;
+      margin-bottom: 4px;
+    }
+    .hero-tagline {
+      font-family: var(--sans);
+      font-size: 10pt;
+      color: var(--gold);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .hero-lifespan {
+      font-family: var(--sans);
+      font-size: 9pt;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .hero-bio {
+      font-size: 10pt;
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    /* ─── Session metadata strip ─────────────────────────────────── */
+    .meta-strip {
+      background: var(--accent-light);
+      border-left: 4px solid var(--accent);
+      padding: 7px 14px;
+      font-family: var(--sans);
+      font-size: 8.5pt;
+      color: var(--muted);
+      margin-bottom: 28px;
+      border-radius: 0 4px 4px 0;
+    }
+    .meta-strip span { margin-right: 18px; }
+    .meta-strip strong { color: var(--text); }
+
+    /* ─── Section headings ──────────────────────────────────────── */
+    .section-heading {
+      font-family: var(--sans);
+      font-size: 13pt;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 1.5px solid var(--rule);
+    }
+
+    /* ─── Session overview ──────────────────────────────────────── */
+    .session-overview {
+      margin-bottom: 28px;
+    }
+    .session-summary {
+      font-size: 10.5pt;
+      margin-bottom: 16px;
+      line-height: 1.65;
+    }
+
+    /* ─── Pull-quote / headline insight ─────────────────────────── */
+    .pull-quote {
+      background: var(--accent-light);
+      border-left: 5px solid var(--gold);
+      padding: 14px 20px;
+      margin: 0 0 28px 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .pull-quote p {
+      font-size: 12pt;
+      font-style: italic;
+      color: var(--accent);
+      line-height: 1.5;
+    }
+    .pull-quote .pull-label {
+      font-family: var(--sans);
+      font-size: 7.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin-bottom: 6px;
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    /* ─── Key themes ────────────────────────────────────────────── */
+    .themes-section {
+      margin-bottom: 28px;
+    }
+    .theme-card {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      background: #FAFBFC;
+    }
+    .theme-name {
+      font-family: var(--sans);
+      font-size: 11pt;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .theme-explanation {
+      font-size: 10pt;
+      margin-bottom: 8px;
+      line-height: 1.55;
+    }
+    .theme-quote {
+      font-style: italic;
+      font-size: 10pt;
+      color: var(--muted);
+      border-left: 3px solid var(--gold);
+      padding-left: 10px;
+      margin-bottom: 8px;
+    }
+    .theme-context-label {
+      font-family: var(--sans);
+      font-size: 7.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .theme-context {
+      font-size: 9.5pt;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ─── Page 2 headings ───────────────────────────────────────── */
+    .p2-section {
+      margin-bottom: 28px;
+    }
+
+    /* ─── Further Exploration table ──────────────────────────────── */
+    .resources-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5pt;
+      margin-top: 8px;
+    }
+    .resources-table th {
+      font-family: var(--sans);
+      font-size: 8pt;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #fff;
+      background: var(--accent);
+      padding: 8px 10px;
+      text-align: left;
+    }
+    .resources-table td {
+      padding: 9px 10px;
+      vertical-align: top;
+      border-bottom: 1px solid var(--rule);
+      line-height: 1.45;
+    }
+    .resources-table tr:nth-child(even) td {
+      background: var(--accent-light);
+    }
+    .resources-table td:first-child {
+      font-weight: 700;
+      color: var(--accent);
+      width: 22%;
+    }
+
+    /* ─── Reflection questions ───────────────────────────────────── */
+    .reflection-list {
+      padding-left: 20px;
+      margin-top: 8px;
+    }
+    .reflection-list li {
+      font-size: 10pt;
+      margin-bottom: 8px;
+      line-height: 1.55;
+    }
+    .reflection-list li::marker {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* ─── Key Facts sidebar box ──────────────────────────────────── */
+    .facts-box {
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      padding: 16px 18px;
+      margin-top: 28px;
+      background: var(--accent-light);
+    }
+    .facts-box-title {
+      font-family: var(--sans);
+      font-size: 10pt;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 10px;
+    }
+    .facts-list {
+      padding-left: 18px;
+    }
+    .facts-list li {
+      font-size: 9.5pt;
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+    .facts-list li::marker {
+      color: var(--gold);
+    }
+
+    /* ─── Footer ─────────────────────────────────────────────────── */
+    .page-footer {
+      margin-top: 36px;
+      padding-top: 10px;
+      border-top: 1px solid var(--rule);
+      font-family: var(--sans);
+      font-size: 7.5pt;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PAGE 1
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <!-- Brand bar -->
+  <div class="brand-bar">
+    <span class="logo-text">HistorAI</span>
+    <span class="doc-label">Conversation Summary Report</span>
+  </div>
+
+  <!-- Hero: character profile -->
+  <div class="hero">
+    <div class="hero-image-wrap">
+      <img class="hero-image" src="{{characterImageUrl}}" alt="{{characterName}}" />
+    </div>
+    <div class="hero-info">
+      <div class="hero-name">{{characterName}}</div>
+      <div class="hero-tagline">{{characterTagline}}</div>
+      <div class="hero-lifespan">{{characterBirthYear}} &ndash; {{characterDeathYear}}</div>
+      <div class="hero-bio">{{characterBio}}</div>
+    </div>
+  </div>
+
+  <!-- Session metadata -->
+  <div class="meta-strip">
+    <span><strong>Date:</strong> {{sessionDate}}</span>
+    <span><strong>Duration:</strong> {{sessionDuration}}</span>
+    <span><strong>User:</strong> {{userName}}</span>
+  </div>
+
+  <!-- Session Overview -->
+  <div class="session-overview">
+    <div class="section-heading">Session Overview</div>
+    <p class="session-summary">{{sessionSummary}}</p>
+
+    <div class="pull-quote">
+      <div class="pull-label">Headline Insight</div>
+      <p>&#8220;{{headlineInsight}}&#8221;</p>
+    </div>
+  </div>
+
+  <!-- Key Themes -->
+  <div class="themes-section">
+    <div class="section-heading">Key Themes from the Conversation</div>
+
+    <!-- Theme 0 -->
+    <div class="theme-card">
+      <div class="theme-name">{{themes[0].name}}</div>
+      <div class="theme-explanation">{{themes[0].explanation}}</div>
+      <div class="theme-quote">&#8220;{{themes[0].quote}}&#8221;</div>
+      <div class="theme-context-label">Historical Context</div>
+      <div class="theme-context">{{themes[0].context}}</div>
+    </div>
+
+    <!-- Theme 1 -->
+    <div class="theme-card">
+      <div class="theme-name">{{themes[1].name}}</div>
+      <div class="theme-explanation">{{themes[1].explanation}}</div>
+      <div class="theme-quote">&#8220;{{themes[1].quote}}&#8221;</div>
+      <div class="theme-context-label">Historical Context</div>
+      <div class="theme-context">{{themes[1].context}}</div>
+    </div>
+
+    <!-- Theme 2 -->
+    <div class="theme-card">
+      <div class="theme-name">{{themes[2].name}}</div>
+      <div class="theme-explanation">{{themes[2].explanation}}</div>
+      <div class="theme-quote">&#8220;{{themes[2].quote}}&#8221;</div>
+      <div class="theme-context-label">Historical Context</div>
+      <div class="theme-context">{{themes[2].context}}</div>
+    </div>
+  </div>
+
+  <!-- Footer page 1 -->
+  <div class="page-footer">
+    <span>HistorAI &mdash; AI-powered historical conversations</span>
+    <span>Page 1 of 2</span>
+  </div>
+
+</div><!-- /page 1 -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PAGE 2
+     ═══════════════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+
+  <!-- Brand bar -->
+  <div class="brand-bar">
+    <span class="logo-text">HistorAI</span>
+    <span class="doc-label">{{characterName}} &mdash; Continued</span>
+  </div>
+
+  <!-- Historical & Scientific Context (consolidated from themes) -->
+  <div class="p2-section">
+    <div class="section-heading">Historical &amp; Scientific Context</div>
+
+    <div class="theme-card">
+      <div class="theme-name">{{themes[0].name}}</div>
+      <div class="theme-context-label">Context</div>
+      <div class="theme-context">{{themes[0].context}}</div>
+    </div>
+
+    <div class="theme-card">
+      <div class="theme-name">{{themes[1].name}}</div>
+      <div class="theme-context-label">Context</div>
+      <div class="theme-context">{{themes[1].context}}</div>
+    </div>
+
+    <div class="theme-card">
+      <div class="theme-name">{{themes[2].name}}</div>
+      <div class="theme-context-label">Context</div>
+      <div class="theme-context">{{themes[2].context}}</div>
+    </div>
+  </div>
+
+  <!-- Further Exploration table -->
+  <div class="p2-section">
+    <div class="section-heading">Further Exploration</div>
+    <table class="resources-table">
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th>Why It Matters</th>
+          <th>Where to Learn More</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{resources[0].topic}}</td>
+          <td>{{resources[0].whyItMatters}}</td>
+          <td>{{resources[0].whereToLearnMore}}</td>
+        </tr>
+        <tr>
+          <td>{{resources[1].topic}}</td>
+          <td>{{resources[1].whyItMatters}}</td>
+          <td>{{resources[1].whereToLearnMore}}</td>
+        </tr>
+        <tr>
+          <td>{{resources[2].topic}}</td>
+          <td>{{resources[2].whyItMatters}}</td>
+          <td>{{resources[2].whereToLearnMore}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Reflection Questions -->
+  <div class="p2-section">
+    <div class="section-heading">Reflection Questions for You</div>
+    <ol class="reflection-list">
+      <li>{{reflectionQuestions[0]}}</li>
+      <li>{{reflectionQuestions[1]}}</li>
+      <li>{{reflectionQuestions[2]}}</li>
+      <li>{{reflectionQuestions[3]}}</li>
+      <li>{{reflectionQuestions[4]}}</li>
+    </ol>
+  </div>
+
+  <!-- Key Facts box -->
+  <div class="facts-box">
+    <div class="facts-box-title">Key Facts about {{characterName}}</div>
+    <ul class="facts-list">
+      <li>{{characterFacts[0]}}</li>
+      <li>{{characterFacts[1]}}</li>
+      <li>{{characterFacts[2]}}</li>
+      <li>{{characterFacts[3]}}</li>
+      <li>{{characterFacts[4]}}</li>
+    </ul>
+  </div>
+
+  <!-- Footer page 2 -->
+  <div class="page-footer">
+    <span>HistorAI &mdash; AI-powered historical conversations</span>
+    <span>Page 2 of 2</span>
+  </div>
+
+</div><!-- /page 2 -->
+
+</body>
+</html>
