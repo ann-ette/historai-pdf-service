@@ -121,17 +121,21 @@ class FoxitPdfService extends PdfService {
 
     // ── Step 3 (Stage 2): PDF Services API → optimized PDF ────────────────
     console.log('[FoxitPdfService] Stage 2 → PDF Services API (compress / optimize)');
-    let optimizedPdfBuffer;
+    let finalPdfBuffer;
     try {
-      optimizedPdfBuffer = await optimizePdf(initialPdfBuffer);
+      finalPdfBuffer = await optimizePdf(initialPdfBuffer);
     } catch (err) {
-      throw new Error(`[FoxitPdfService] Stage 2 failed: ${err.message}`);
+      // Stage 2 is non-critical — log the failure and return the uncompressed PDF
+      console.warn(
+        `[FoxitPdfService] Stage 2 compression failed (returning uncompressed PDF): ${err.message}`
+      );
+      finalPdfBuffer = initialPdfBuffer;
     }
 
     console.log(
-      `[FoxitPdfService] Pipeline complete — final PDF: ${optimizedPdfBuffer.length} bytes`
+      `[FoxitPdfService] Pipeline complete — final PDF: ${finalPdfBuffer.length} bytes`
     );
-    return optimizedPdfBuffer;
+    return finalPdfBuffer;
   }
 }
 

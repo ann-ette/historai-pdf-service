@@ -11,7 +11,7 @@ const { extractReportData } = require('./utils/llmProcessor');
 const FoxitPdfService = require('./services/FoxitPdfService');
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 // Initialise Foxit service once (constructor validates env vars)
 let foxitPdfService;
@@ -56,9 +56,22 @@ app.post('/api/generate-report', async (req, res) => {
     userName,
   } = req.body;
 
-  // Basic validation
-  if (!characterName) {
+  // Input validation
+  if (!characterName || typeof characterName !== 'string' || !characterName.trim()) {
     return res.status(400).json({ error: 'characterName is required' });
+  }
+  if (!transcript || typeof transcript !== 'string') {
+    return res.status(400).json({ error: 'transcript is required' });
+  }
+  if (!characterMetadata || typeof characterMetadata !== 'object') {
+    return res.status(400).json({ error: 'characterMetadata is required' });
+  }
+  const { tagline, birthYear, deathYear, bio, facts } = characterMetadata;
+  if (!tagline || !birthYear || !deathYear || !bio) {
+    return res.status(400).json({ error: 'characterMetadata must include tagline, birthYear, deathYear, and bio' });
+  }
+  if (!Array.isArray(facts) || facts.length === 0) {
+    return res.status(400).json({ error: 'characterMetadata.facts must be a non-empty array' });
   }
 
   try {
