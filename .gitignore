@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Environment — never commit real credentials
+config/.env
+
+# Generated output
+output/*.pdf
+
+# OS / editor
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*

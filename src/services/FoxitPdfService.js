@@ -8,18 +8,14 @@
  *
  *   Stage 1 — Document Generation API  (HTML → initial PDF)
  *     FoxitDocumentGenerationClient.generatePdfFromHtml(filledHtml)
- *     Env vars: FOXIT_DOCGEN_BASE_URL, FOXIT_DOCGEN_API_KEY
+ *     Env vars: FOXIT_DOCGEN_BASE_URL, FOXIT_DOCGEN_CLIENT_ID, FOXIT_DOCGEN_CLIENT_SECRET
  *
  *   Stage 2 — PDF Services API  (PDF → compressed / optimized PDF)
  *     FoxitPdfServicesClient.optimizePdf(initialPdfBuffer)
- *     Env vars: FOXIT_PDFSERVICES_BASE_URL, FOXIT_PDFSERVICES_API_KEY
+ *     Env vars: FOXIT_PDFSERVICES_BASE_URL, FOXIT_PDFSERVICES_CLIENT_ID, FOXIT_PDFSERVICES_CLIENT_SECRET
  *
- * The public interface (generateConversationReport) is unchanged from the
- * original single-endpoint version. Only the internal implementation differs.
- *
- * Backwards-compat note:
- *   The old FOXIT_BASE_URL / FOXIT_API_KEY variables are no longer used.
- *   See config/.env.example for the new variable names.
+ * The public interface (generateConversationReport) is unchanged.
+ * Only the underlying clients and their env vars differ from the original.
  */
 
 const fs   = require('fs');

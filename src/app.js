@@ -1,6 +1,10 @@
 'use strict';
 
-require('dotenv').config({ path: require('path').join(__dirname, '..', 'config', '.env') });
+// Load config/.env when running locally; on Replit env vars come from Secrets
+const envPath = require('path').join(__dirname, '..', 'config', '.env');
+if (require('fs').existsSync(envPath)) {
+  require('dotenv').config({ path: envPath });
+}
 
 const express = require('express');
 const { extractReportData } = require('./utils/llmProcessor');
@@ -15,7 +19,7 @@ try {
   foxitPdfService = new FoxitPdfService();
 } catch (err) {
   console.error(`[startup] Failed to initialise FoxitPdfService: ${err.message}`);
-  console.error('[startup] Make sure FOXIT_DOCGEN_BASE_URL, FOXIT_DOCGEN_API_KEY, FOXIT_PDFSERVICES_BASE_URL, and FOXIT_PDFSERVICES_API_KEY are set in config/.env');
+  console.error('[startup] Make sure FOXIT_DOCGEN_BASE_URL, FOXIT_DOCGEN_CLIENT_ID, FOXIT_DOCGEN_CLIENT_SECRET, FOXIT_PDFSERVICES_BASE_URL, FOXIT_PDFSERVICES_CLIENT_ID, and FOXIT_PDFSERVICES_CLIENT_SECRET are set in config/.env');
   process.exit(1);
 }
 

@@ -78,17 +78,19 @@ npm install
 cp config/.env.example config/.env
 ```
 
-Open `config/.env` and fill in all four Foxit variables:
+Open `config/.env` and fill in all six Foxit variables:
 
-| Variable                    | Stage | Description                                                                 |
-|-----------------------------|-------|-----------------------------------------------------------------------------|
-| `FOXIT_DOCGEN_BASE_URL`     | 1     | Base URL of the Document Generation API, e.g. `https://api.foxit.com/document-generation/v1` |
-| `FOXIT_DOCGEN_API_KEY`      | 1     | Bearer token / API key for the Document Generation API                      |
-| `FOXIT_PDFSERVICES_BASE_URL`| 2     | Base URL of the PDF Services API, e.g. `https://api.foxit.com/pdfservices/v1` |
-| `FOXIT_PDFSERVICES_API_KEY` | 2     | Bearer token / API key for the PDF Services API                             |
-| `PORT`                      | —     | Port for the Express server (default `3000`)                                |
+| Variable                        | Stage | Description                                                                              |
+|---------------------------------|-------|------------------------------------------------------------------------------------------|
+| `FOXIT_DOCGEN_BASE_URL`         | 1     | Base URL of the Document Generation API, e.g. `https://api.foxit.com/document-generation/v1` |
+| `FOXIT_DOCGEN_CLIENT_ID`        | 1     | Client ID for the Document Generation API (`X-Client-Id` header)                        |
+| `FOXIT_DOCGEN_CLIENT_SECRET`    | 1     | Client Secret for the Document Generation API (`X-Client-Secret` header)                |
+| `FOXIT_PDFSERVICES_BASE_URL`    | 2     | Base URL of the PDF Services API, e.g. `https://api.foxit.com/pdfservices/v1`           |
+| `FOXIT_PDFSERVICES_CLIENT_ID`   | 2     | Client ID for the PDF Services API (`X-Client-Id` header)                               |
+| `FOXIT_PDFSERVICES_CLIENT_SECRET`| 2    | Client Secret for the PDF Services API (`X-Client-Secret` header)                       |
+| `PORT`                          | —     | Port for the Express server (default `3000`)                                             |
 
-> **Note:** The old `FOXIT_BASE_URL` and `FOXIT_API_KEY` variables from the original version are no longer used. Replace them with the four variables above.
+Auth is sent via `X-Client-Id` / `X-Client-Secret` request headers on every API call — no Bearer tokens or API keys needed.
 
 ---
 
@@ -203,6 +205,6 @@ Edit `src/utils/llmProcessor.js`. The `extractReportData({ transcript, character
 ## Deploying to Replit
 
 1. Import the repo into Replit.
-2. Add all four Foxit environment variables (`FOXIT_DOCGEN_BASE_URL`, `FOXIT_DOCGEN_API_KEY`, `FOXIT_PDFSERVICES_BASE_URL`, `FOXIT_PDFSERVICES_API_KEY`) plus `PORT` in Replit's **Secrets** panel.
+2. Add all six Foxit environment variables (`FOXIT_DOCGEN_BASE_URL`, `FOXIT_DOCGEN_CLIENT_ID`, `FOXIT_DOCGEN_CLIENT_SECRET`, `FOXIT_PDFSERVICES_BASE_URL`, `FOXIT_PDFSERVICES_CLIENT_ID`, `FOXIT_PDFSERVICES_CLIENT_SECRET`) plus `PORT` in Replit's **Secrets** panel.
 3. Set the run command to `npm start`.
 4. Replit will expose a public URL — update your HistorAI backend to point at it.
