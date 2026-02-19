@@ -2,6 +2,11 @@
 
 > **Foxit API Hackathon Submission**
 
+## Prerequisites
+
+- Node.js 18 or later
+- A free [Foxit developer account](https://developer-api.foxit.com) with a PDF Services API app created
+
 ## Project Pitch
 
 HistorAI lets users have live AI conversations with historical figures. After each session, users deserve more than a chat log — they deserve a polished, shareable takeaway.
@@ -14,13 +19,15 @@ This is a fully automated **input → output** pipeline: raw conversation data g
 
 ## Demo
 
-**Test it locally in under 2 minutes** — see [Setup](#setup-local) below.
+**Test it locally in under 5 minutes** — follow [Setup](#setup-local) below, then:
 
-The included Einstein demo generates this report from a single command:
+```bash
+# Terminal 1 — start the server
+npm start
 
-```
+# Terminal 2 — run the Einstein end-to-end test
 node src/testEinstein.js
-→ output/einstein-report.pdf  (2-page conversation summary, ~140KB)
+# → output/einstein-report.pdf  (2-page conversation summary, ~140KB)
 ```
 
 ---
@@ -92,8 +99,7 @@ POST /api/generate-report
 ```
 .
 ├── config/
-│   ├── .env.example        # Credential template — copy to config/.env for local dev
-│   └── .env                # Your real credentials — gitignored, never committed
+│   └── .env.example        # Credential template — copy to config/.env for local dev
 ├── output/                 # Test PDFs land here (gitignored)
 ├── src/
 │   ├── services/
@@ -114,7 +120,7 @@ POST /api/generate-report
 
 ---
 
-## Setup (Local)
+## Setup (Local) {#setup-local}
 
 ### 1. Clone and install
 
@@ -158,15 +164,21 @@ PORT=3000
 npm start
 ```
 
+You should see:
+```
+[HistorAI PDF Gen] Server running on http://localhost:3000
+[HistorAI PDF Gen] POST http://localhost:3000/api/generate-report
+```
+
 ### 5. Run the end-to-end test
 
-In a second terminal:
+**Keep the server running** and open a second terminal:
 
 ```bash
 node src/testEinstein.js
 ```
 
-Open `output/einstein-report.pdf` to see the generated report.
+Open `output/einstein-report.pdf` to see the generated 2-page report.
 
 ---
 
