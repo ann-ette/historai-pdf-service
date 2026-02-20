@@ -232,6 +232,12 @@ Returns `{ "status": "ok", "service": "historai-pdf-gen" }`.
 
 ---
 
+## TypeScript Plugin
+
+A TypeScript version of the Foxit integration is available in [`/plugin`](./plugin) for developers who want to embed PDF generation directly into a Node.js/TypeScript backend rather than running this as a separate service.
+
+---
+
 ## Extending This Project
 
 **Swap in a real LLM:** Edit `src/utils/llmProcessor.js`. The `extractReportData({ transcript, characterName, characterMetadata })` function is the only integration point — replace the stub return value with a call to OpenAI, Anthropic Claude, etc.
