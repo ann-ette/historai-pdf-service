@@ -101,6 +101,15 @@ POST /api/generate-report
 ├── config/
 │   └── .env.example        # Credential template — copy to config/.env for local dev
 ├── output/                 # Test PDFs land here (gitignored)
+├── plugin/                 # TypeScript plugin for direct backend integration
+│   ├── src/
+│   │   ├── FoxitDocumentGenerationClient.ts  # Stage 1: HTML → PDF (TypeScript)
+│   │   ├── FoxitPdfServicesClient.ts         # Stage 2: compress PDF (TypeScript)
+│   │   ├── pdfReportService.ts               # Orchestrator + template interpolation
+│   │   └── index.ts                          # Public exports
+│   ├── templates/
+│   │   └── conversation-report.html          # Production HTML template
+│   └── README.md                             # Plugin-specific documentation
 ├── src/
 │   ├── services/
 │   │   ├── PdfService.js                     # Abstract base class / interface
@@ -234,7 +243,45 @@ Returns `{ "status": "ok", "service": "historai-pdf-gen" }`.
 
 ## TypeScript Plugin
 
-A TypeScript version of the Foxit integration is available in [`/plugin`](./plugin) for developers who want to embed PDF generation directly into a Node.js/TypeScript backend rather than running this as a separate service.
+A TypeScript version of the Foxit integration is available in [`/plugin`](./plugin) for developers who want to embed PDF generation **directly into their own Node.js/TypeScript backend** rather than running this as a separate HTTP service.
+
+### When to use the plugin vs. the service
+
+| | Standalone Service (`/src`) | TypeScript Plugin (`/plugin`) |
+|--|--|--|
+| **How it runs** | Deployed separately, called over HTTP | Imported directly into your app |
+| **Best for** | React, Swift, Python, or any app that calls it via API | Node.js / TypeScript backends |
+| **Integration** | `POST /api/generate-report` | `import { generateConversationReport }` |
+| **Deployment** | Replit, Railway, any server | Ships inside your existing app |
+
+### Quick start
+
+```typescript
+import { generateConversationReport, ReportData } from "./plugin/src";
+
+const data: ReportData = {
+  characterName:      "Albert Einstein",
+  characterTagline:   "Theoretical Physicist & Humanitarian",
+  characterBirthYear: "1879",
+  characterDeathYear: "1955",
+  characterBio:       "Einstein revolutionised physics...",
+  characterImageUrl:  "https://example.com/einstein.jpg",
+  characterFacts:     ["Born 1879 in Ulm, Germany", ...],
+  sessionDate:        "February 20, 2026",
+  sessionDuration:    "28 minutes",
+  userName:           "Jane Doe",
+  sessionSummary:     "A wide-ranging conversation about relativity...",
+  headlineInsight:    "Imagination is more important than knowledge.",
+  themes:             [{ name: "Relativity", explanation: "...", quote: "...", context: "..." }],
+  resources:          [{ topic: "Special Relativity", whyItMatters: "...", whereToLearnMore: "..." }],
+  reflectionQuestions:["What assumptions in your field might be worth questioning?"],
+};
+
+const pdfBuffer = await generateConversationReport(data);
+// Stream it, save it, or return it as an HTTP response
+```
+
+See [`/plugin/README.md`](./plugin/README.md) for full documentation, environment variable setup, and individual API usage.
 
 ---
 
