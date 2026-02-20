@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HistorAI Learning Report – {{characterName}}</title>
+  <style>
+    @font-face {
+      font-family: 'Mynerve';
+      font-style: normal;
+      font-weight: 400;
+      src: url(data:font/truetype;base64,{{mynerveFont}}) format('truetype');
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent:      #2C5F8A;
+      --accent-light:#E8F1F8;
+      --gold:        #C9A84C;
+      --text:        #1A1A2E;
+      --muted:       #5A6072;
+      --rule:        #D0D6E0;
+      --serif:       Georgia, 'Times New Roman', serif;
+      --sans:        'Helvetica Neue', Arial, sans-serif;
+    }
+
+    @page {
+      size: letter;
+      margin: 44px 48px;
+    }
+
+    html, body {
+      font-family: var(--serif);
+      font-size: 10pt;
+      color: var(--text);
+      background: #fff;
+      line-height: 1.5;
+    }
+
+    .brand-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+    }
+    .brand-bar .logo-text {
+      font-family: 'Mynerve', var(--sans);
+      font-size: 17pt;
+      font-weight: 400;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+    .brand-bar .doc-label {
+      font-family: var(--sans);
+      font-size: 8pt;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .hero-image-wrap { flex-shrink: 0; }
+    .hero-image {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2.5px solid var(--accent);
+      background: var(--accent-light);
+    }
+    .hero-info { flex: 1; }
+    .hero-name {
+      font-family: var(--sans);
+      font-size: 18pt;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.15;
+      margin-bottom: 2px;
+    }
+    .hero-tagline {
+      font-family: var(--sans);
+      font-size: 8.5pt;
+      color: var(--gold);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+    }
+    .hero-lifespan {
+      font-family: var(--sans);
+      font-size: 8pt;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .hero-bio {
+      font-size: 9.5pt;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .meta-strip {
+      background: var(--accent-light);
+      border-left: 4px solid var(--accent);
+      padding: 6px 12px;
+      font-family: var(--sans);
+      font-size: 8pt;
+      color: var(--muted);
+      margin-bottom: 20px;
+      border-radius: 0 4px 4px 0;
+    }
+    .meta-strip span { margin-right: 16px; }
+    .meta-strip strong { color: var(--text); }
+
+    .section-heading {
+      font-family: var(--sans);
+      font-size: 11pt;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1.5px solid var(--rule);
+    }
+
+    .section { margin-bottom: 20px; }
+
+    .session-summary {
+      font-size: 10pt;
+      margin-bottom: 12px;
+      line-height: 1.55;
+    }
+
+    .pull-quote {
+      background: var(--accent-light);
+      border-left: 4px solid var(--gold);
+      padding: 10px 16px;
+      margin-bottom: 20px;
+      border-radius: 0 6px 6px 0;
+    }
+    .pull-quote p {
+      font-size: 11pt;
+      font-style: italic;
+      color: var(--accent);
+      line-height: 1.45;
+    }
+    .pull-quote .pull-label {
+      font-family: var(--sans);
+      font-size: 7pt;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin-bottom: 4px;
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .theme-card {
+      border: 1px solid var(--rule);
+      border-radius: 5px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      background: #FAFBFC;
+      break-inside: avoid;
+    }
+    .theme-name {
+      font-family: var(--sans);
+      font-size: 10pt;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 3px;
+    }
+    .theme-explanation {
+      font-size: 9.5pt;
+      margin-bottom: 6px;
+      line-height: 1.45;
+    }
+    .theme-quote {
+      font-style: italic;
+      font-size: 9pt;
+      color: var(--muted);
+      border-left: 2.5px solid var(--gold);
+      padding-left: 8px;
+      margin-bottom: 6px;
+    }
+    .theme-context-label {
+      font-family: var(--sans);
+      font-size: 7pt;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 1px;
+    }
+    .theme-context {
+      font-size: 9pt;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .resources-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9pt;
+      margin-top: 6px;
+    }
+    .resources-table th {
+      font-family: var(--sans);
+      font-size: 7.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #fff;
+      background: var(--accent);
+      padding: 7px 9px;
+      text-align: left;
+    }
+    .resources-table td {
+      padding: 7px 9px;
+      vertical-align: top;
+      border-bottom: 1px solid var(--rule);
+      line-height: 1.4;
+    }
+    .resources-table tr:nth-child(even) td {
+      background: var(--accent-light);
+    }
+    .resources-table td:first-child {
+      font-weight: 700;
+      color: var(--accent);
+      width: 22%;
+    }
+
+    .reflection-list {
+      padding-left: 18px;
+      margin-top: 6px;
+    }
+    .reflection-list li {
+      font-size: 9.5pt;
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+    .reflection-list li::marker {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .facts-box {
+      border: 1.5px solid var(--accent);
+      border-radius: 6px;
+      padding: 12px 16px;
+      background: var(--accent-light);
+      break-inside: avoid;
+    }
+    .facts-box-title {
+      font-family: var(--sans);
+      font-size: 9pt;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .facts-list { padding-left: 16px; margin: 0; }
+    .facts-list li {
+      font-size: 9pt;
+      margin-bottom: 4px;
+      line-height: 1.45;
+    }
+    .facts-list li::marker { color: var(--gold); }
+
+    .page-footer {
+      margin-top: 30px;
+      padding-top: 8px;
+      border-top: 1px solid var(--rule);
+      font-family: var(--sans);
+      font-size: 7pt;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="brand-bar">
+    <span class="logo-text">HistorAI</span>
+    <span class="doc-label">Learning Report</span>
+  </div>
+
+  <div class="hero">
+    <div class="hero-image-wrap">
+      <img class="hero-image" src="{{characterImageUrl}}" alt="{{characterName}}" />
+    </div>
+    <div class="hero-info">
+      <div class="hero-name">{{characterName}}</div>
+      <div class="hero-tagline">{{characterTagline}}</div>
+      <div class="hero-lifespan">{{characterBirthYear}} &ndash; {{characterDeathYear}}</div>
+      <div class="hero-bio">{{characterBio}}</div>
+    </div>
+  </div>
+
+  <div class="meta-strip">
+    <span><strong>Date:</strong> {{sessionDate}}</span>
+    <span><strong>Duration:</strong> {{sessionDuration}}</span>
+    <span><strong>User:</strong> {{userName}}</span>
+  </div>
+
+  <div class="section">
+    <div class="section-heading">Session Overview</div>
+    <p class="session-summary">{{sessionSummary}}</p>
+    <div class="pull-quote">
+      <div class="pull-label">Headline Insight</div>
+      <p>&#8220;{{headlineInsight}}&#8221;</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-heading">Key Themes from the Conversation</div>
+
+    <div class="theme-card">
+      <div class="theme-name">{{themes[0].name}}</div>
+      <div class="theme-explanation">{{themes[0].explanation}}</div>
+      <div class="theme-quote">&#8220;{{themes[0].quote}}&#8221;</div>
+      <div class="theme-context-label">Historical Context</div>
+      <div class="theme-context">{{themes[0].context}}</div>
+    </div>
+
+    <div class="theme-card">
+      <div class="theme-name">{{themes[1].name}}</div>
+      <div class="theme-explanation">{{themes[1].explanation}}</div>
+      <div class="theme-quote">&#8220;{{themes[1].quote}}&#8221;</div>
+      <div class="theme-context-label">Historical Context</div>
+      <div class="theme-context">{{themes[1].context}}</div>
+    </div>
+
+    <div class="theme-card">
+      <div class="theme-name">{{themes[2].name}}</div>
+      <div class="theme-explanation">{{themes[2].explanation}}</div>
+      <div class="theme-quote">&#8220;{{themes[2].quote}}&#8221;</div>
+      <div class="theme-context-label">Historical Context</div>
+      <div class="theme-context">{{themes[2].context}}</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-heading">Further Exploration</div>
+    <table class="resources-table">
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th>Why It Matters</th>
+          <th>Where to Learn More</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{resources[0].topic}}</td>
+          <td>{{resources[0].whyItMatters}}</td>
+          <td>{{resources[0].whereToLearnMore}}</td>
+        </tr>
+        <tr>
+          <td>{{resources[1].topic}}</td>
+          <td>{{resources[1].whyItMatters}}</td>
+          <td>{{resources[1].whereToLearnMore}}</td>
+        </tr>
+        <tr>
+          <td>{{resources[2].topic}}</td>
+          <td>{{resources[2].whyItMatters}}</td>
+          <td>{{resources[2].whereToLearnMore}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-heading">Reflection Questions</div>
+    <ol class="reflection-list">
+      <li>{{reflectionQuestions[0]}}</li>
+      <li>{{reflectionQuestions[1]}}</li>
+      <li>{{reflectionQuestions[2]}}</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <div class="facts-box">
+      <div class="facts-box-title">Key Facts About {{characterName}}</div>
+      <ul class="facts-list">
+        <li>{{characterFacts[0]}}</li>
+        <li>{{characterFacts[1]}}</li>
+        <li>{{characterFacts[2]}}</li>
+        <li>{{characterFacts[3]}}</li>
+        <li>{{characterFacts[4]}}</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>HistorAI &mdash; AI-powered historical conversations</span>
+  </div>
+
+</body>
+</html>
